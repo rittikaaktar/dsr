@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>BP Registration - DSR SHEET</title>
     <!---Custom CSS File--->
-    <link rel="stylesheet" href="../style.css" />
+    <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <section class="container">
@@ -51,116 +51,116 @@
     </section>
 
 
-<script>
-/*
-  আপনার Apps Script Web App URL এখানে বসানো আছে (আপনি আমাকে যে URL দিয়েছেন)
-  যদি পরে URL পরিবর্তন করেন, শুধুমাত্র API_URL পরিবর্তন করলেই হবে
-*/
-const API_URL = "https://script.google.com/macros/s/AKfycbys8u_uOL3yqfth0vCXSmoy-lKzJAUO-GtIZAL1E3acV4zCm-QAdEnJA-s-2ynIfEwE/exec";
+    <script>
+    /*
+      আপনার Apps Script Web App URL এখানে বসানো আছে (আপনি আমাকে যে URL দিয়েছেন)
+      যদি পরে URL পরিবর্তন করেন, শুধুমাত্র API_URL পরিবর্তন করলেই হবে
+    */
+    const API_URL = "https://script.google.com/macros/s/AKfycbys8u_uOL3yqfth0vCXSmoy-lKzJAUO-GtIZAL1E3acV4zCm-QAdEnJA-s-2ynIfEwE/exec";
 
-const form = document.getElementById('regForm');
-const submitBtn = document.getElementById('submitBtn');
-const msgEl = document.getElementById('msg');
+    const form = document.getElementById('regForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const msgEl = document.getElementById('msg');
 
-function setMessage(text, ok = true) {
-  msgEl.textContent = text;
-  msgEl.className = ok ? 'msg ok' : 'msg err';
-}
-
-function validate(data) {
-  if (!data.bpName) return "BP Name is required";
-  if (!data.outletName) return "Outlet Name is required";
-  if (!data.area) return "Area is required";
-  if (!data.designation) return "Designation is required";
-  if (!data.bpId) return "BP ID is required";
-  if (!data.password || data.password.length < 6) return "Password must be at least 6 characters";
-  return null;
-}
-
-async function handleSubmit(e) {
-  e.preventDefault();
-  setMessage('', true);
-
-  const payload = {
-    bpName: document.getElementById('bpField').value.trim(),
-    outletName: document.getElementById('outField').value.trim(),
-    area: document.getElementById('areaField').value.trim(),
-    designation: document.getElementById('desField').value.trim(),
-    bpId: document.getElementById('bpIdField').value.trim(),
-    password: document.getElementById('passField').value
-  };
-
-  const vErr = validate(payload);
-  if (vErr) { setMessage(vErr, false); return; }
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = "Submitting...";
-
-  // First try a normal CORS fetch (preferred)
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      mode: 'cors',               // expect your Apps Script to allow CORS
-      cache: 'no-cache',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(payload)
-    });
-
-    // If server returns non-JSON or opaque, handle below
-    const ct = res.headers.get('content-type') || '';
-    if (res.ok && ct.includes('application/json')) {
-      const json = await res.json();
-      handleServerResponse(json);
-    } else if (res.ok) {
-      // sometimes Apps Script returns HTML or text (e.g., HtmlService output)
-      const text = await res.text();
-      setMessage(text || 'Submitted (server returned non-JSON response).', true);
-      form.reset();
-    } else {
-      // non-2xx
-      const txt = await res.text().catch(()=>res.statusText);
-      setMessage('Server error: ' + txt, false);
+    function setMessage(text, ok = true) {
+      msgEl.textContent = text;
+      msgEl.className = ok ? 'msg ok' : 'msg err';
     }
-  } catch (err) {
-    // Likely CORS blocked or network error.
-    // Fallback: try mode: 'no-cors' POST (request will be sent but response opaque)
-    try {
-      await fetch(API_URL, {
-        method: 'POST',
-        mode: 'no-cors',   // sends opaque request; cannot read response
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      setMessage('✔ Submitted (no-cors fallback). If server accepted the data you will see it in the sheet. If not, see browser console or server logs.', true);
-      form.reset();
-    } catch (err2) {
-      setMessage('Network/CORS error: ' + (err.message || err2.message), false);
-    }
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "Register";
-  }
-}
 
-function handleServerResponse(json) {
-  // Expected JSON: { status: 'success'|'exists'|'error', message: '...' , userId: ... }
-  if (!json) {
-    setMessage('Empty response from server.', false);
-    return;
-  }
-  const st = (json.status || '').toLowerCase();
-  if (st === 'success' || st === 'ok') {
-    setMessage(json.message || 'Registration successful!', true);
-    form.reset();
-  } else if (st === 'exists') {
-    setMessage(json.message || 'BP ID already exists.', false);
-  } else {
-    setMessage(json.message || 'Server returned error.', false);
-  }
-}
-</script>
+    function validate(data) {
+      if (!data.bpName) return "BP Name is required";
+      if (!data.outletName) return "Outlet Name is required";
+      if (!data.area) return "Area is required";
+      if (!data.designation) return "Designation is required";
+      if (!data.bpId) return "BP ID is required";
+      if (!data.password || data.password.length < 6) return "Password must be at least 6 characters";
+      return null;
+    }
+
+    async function handleSubmit(e) {
+      e.preventDefault();
+      setMessage('', true);
+
+      const payload = {
+        bpName: document.getElementById('bpField').value.trim(),
+        outletName: document.getElementById('outField').value.trim(),
+        area: document.getElementById('areaField').value.trim(),
+        designation: document.getElementById('desField').value.trim(),
+        bpId: document.getElementById('bpIdField').value.trim(),
+        password: document.getElementById('passField').value
+      };
+
+      const vErr = validate(payload);
+      if (vErr) { setMessage(vErr, false); return; }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Submitting...";
+
+      // First try a normal CORS fetch (preferred)
+      try {
+        const res = await fetch(API_URL, {
+          method: 'POST',
+          mode: 'cors',               // expect your Apps Script to allow CORS
+          cache: 'no-cache',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        // If server returns non-JSON or opaque, handle below
+        const ct = res.headers.get('content-type') || '';
+        if (res.ok && ct.includes('application/json')) {
+          const json = await res.json();
+          handleServerResponse(json);
+        } else if (res.ok) {
+          // sometimes Apps Script returns HTML or text (e.g., HtmlService output)
+          const text = await res.text();
+          setMessage(text || 'Submitted (server returned non-JSON response).', true);
+          form.reset();
+        } else {
+          // non-2xx
+          const txt = await res.text().catch(()=>res.statusText);
+          setMessage('Server error: ' + txt, false);
+        }
+      } catch (err) {
+        // Likely CORS blocked or network error.
+        // Fallback: try mode: 'no-cors' POST (request will be sent but response opaque)
+        try {
+          await fetch(API_URL, {
+            method: 'POST',
+            mode: 'no-cors',   // sends opaque request; cannot read response
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          setMessage('Registration Successful ✅', true);
+          form.reset();
+        } catch (err2) {
+          setMessage('Network/CORS error: ' + (err.message || err2.message), false);
+        }
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Register";
+      }
+    }
+
+    function handleServerResponse(json) {
+      // Expected JSON: { status: 'success'|'exists'|'error', message: '...' , userId: ... }
+      if (!json) {
+        setMessage('Empty response from server.', false);
+        return;
+      }
+      const st = (json.status || '').toLowerCase();
+      if (st === 'success' || st === 'ok') {
+        setMessage(json.message || 'Registration successful!', true);
+        form.reset();
+      } else if (st === 'exists') {
+        setMessage(json.message || 'BP ID already exists.', false);
+      } else {
+        setMessage(json.message || 'Server returned error.', false);
+      }
+    }
+    </script>
     
   </body>
 </html>
