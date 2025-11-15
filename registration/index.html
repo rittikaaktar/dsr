@@ -1,166 +1,122 @@
 <!DOCTYPE html>
-<!---Coding By CodingLab | www.codinglabweb.com--->
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>BP Registration - DSR SHEET</title>
-    <!---Custom CSS File--->
-    <link rel="stylesheet" href="../style.css" />
-  </head>
-  <body>
-    <section class="container">
-      <header>BP Registration</header>
-      <form id="regForm" onsubmit="return handleSubmit(event)" autocomplete="off" novalidate class="form">
-        <div class="input-box">
-          <label>BP NAME:</label>
-          <input id="bpField" name="bpName" type="text" placeholder="Enter BP name" required>
-        </div>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BP Registration</title>
+<style>
+body { font-family: Arial,sans-serif; background:#f6f8fa; display:flex; justify-content:center; padding:24px;}
+.card { max-width:720px; width:100%; background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 24px rgba(18,38,63,0.08);}
+h1 { margin:0 0 8px;}
+p.lead { margin:0 0 18px; color:#666;}
+label { display:block; margin-top:12px; font-weight:600;}
+input { width:100%; padding:10px; margin-top:6px; border:1px solid #e3e8ee; border-radius:8px; box-sizing:border-box;}
+button { margin-top:16px; padding:10px 16px; border-radius:8px; border:0; background:#0b76ef; color:#fff; font-weight:600; cursor:pointer;}
+button[disabled] { opacity:0.6; cursor:not-allowed;}
+.msg { margin-top:14px; font-weight:600;}
+.msg.ok { color:green;}
+.msg.err { color:#c0392b;}
+small.hint { display:block; margin-top:10px; color:#666;}
+</style>
+</head>
+<body>
 
-        <div class="input-box">
-          <label>OUTLATE NAME:</label>
-          <input id="outField" name="outletName" type="text" placeholder="Outlet name" required>
-        </div>
-        
-        <div class="input-box">
-          <label>AREA:</label>
-          <input id="areaField" name="area" type="text" placeholder="Area" required>
-        </div>
+<div class="card">
+<h1>BP Registration</h1>
+<p class="lead">BP NAME, OUTLATE NAME, AREA, DESIGNATION, BP ID দিয়ে রেজিস্ট্রেশন করুন।</p>
 
-        <div class="input-box">
-          <label>DESIGNATION:</label>
-          <input id="desField" name="designation" type="text" placeholder="Designation" required>
-        </div>
+<form id="regForm" onsubmit="return handleSubmit(event)" autocomplete="off">
+<label>BP NAME
+<input id="bpField" name="bpName" type="text" required>
+</label>
 
-        <div class="input-box">
-          <label>BP ID:</label>
-          <input id="bpIdField" name="bpId" type="text" placeholder="Enter BP ID" required>
-        </div>
+<label>OUTLATE NAME
+<input id="outField" name="outletName" type="text" required>
+</label>
 
-        <div class="input-box">
-          <label>PASSWORD:</label>
-          <input id="passField" name="password" type="password" placeholder="Password (min 6 chars)" required>
-        </div>
+<label>AREA
+<input id="areaField" name="area" type="text" required>
+</label>
 
-        <button id="submitBtn" type="submit">Register</button>
-      </form>
+<label>DESIGNATION
+<input id="desField" name="designation" type="text" required>
+</label>
 
-      <div id="msg" style="margin-top:20px;font-weight:bold;" aria-live="polite"></div>
-      
-    </section>
+<label>BP ID
+<input id="bpIdField" name="bpId" type="text" required>
+</label>
 
+<label>PASSWORD
+<input id="passField" name="password" type="password" required minlength="6">
+</label>
 
-    <script>
-    /*
-      আপনার Apps Script Web App URL এখানে বসানো আছে (আপনি আমাকে যে URL দিয়েছেন)
-      যদি পরে URL পরিবর্তন করেন, শুধুমাত্র API_URL পরিবর্তন করলেই হবে
-    */
-    const API_URL = "https://script.google.com/macros/s/AKfycbys8u_uOL3yqfth0vCXSmoy-lKzJAUO-GtIZAL1E3acV4zCm-QAdEnJA-s-2ynIfEwE/exec";
+<button id="submitBtn" type="submit">Register</button>
+<div id="msg" class="msg"></div>
+<small class="hint">সাবমিশনের পরে মেসেজ দেখা যাবে।</small>
+</form>
+</div>
 
-    const form = document.getElementById('regForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const msgEl = document.getElementById('msg');
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbys8u_uOL3yqfth0vCXSmoy-lKzJAUO-GtIZAL1E3acV4zCm-QAdEnJA-s-2ynIfEwE/exec";
 
-    function setMessage(text, ok = true) {
-      msgEl.textContent = text;
-      msgEl.className = ok ? 'msg ok' : 'msg err';
-    }
+const form = document.getElementById('regForm');
+const submitBtn = document.getElementById('submitBtn');
+const msgEl = document.getElementById('msg');
 
-    function validate(data) {
-      if (!data.bpName) return "BP Name is required";
-      if (!data.outletName) return "Outlet Name is required";
-      if (!data.area) return "Area is required";
-      if (!data.designation) return "Designation is required";
-      if (!data.bpId) return "BP ID is required";
-      if (!data.password || data.password.length < 6) return "Password must be at least 6 characters";
-      return null;
-    }
+function setMessage(text, ok = true) {
+  msgEl.textContent = text;
+  msgEl.className = ok ? 'msg ok' : 'msg err';
+}
 
-    async function handleSubmit(e) {
-      e.preventDefault();
-      setMessage('', true);
+function validate(data) {
+  if (!data.bpName) return "BP Name is required";
+  if (!data.outletName) return "Outlet Name is required";
+  if (!data.area) return "Area is required";
+  if (!data.designation) return "Designation is required";
+  if (!data.bpId) return "BP ID is required";
+  if (!data.password || data.password.length < 6) return "Password must be at least 6 characters";
+  return null;
+}
 
-      const payload = {
-        bpName: document.getElementById('bpField').value.trim(),
-        outletName: document.getElementById('outField').value.trim(),
-        area: document.getElementById('areaField').value.trim(),
-        designation: document.getElementById('desField').value.trim(),
-        bpId: document.getElementById('bpIdField').value.trim(),
-        password: document.getElementById('passField').value
-      };
+async function handleSubmit(e) {
+  e.preventDefault();
+  setMessage('', true);
 
-      const vErr = validate(payload);
-      if (vErr) { setMessage(vErr, false); return; }
+  const payload = {
+    bpName: document.getElementById('bpField').value.trim(),
+    outletName: document.getElementById('outField').value.trim(),
+    area: document.getElementById('areaField').value.trim(),
+    designation: document.getElementById('desField').value.trim(),
+    bpId: document.getElementById('bpIdField').value.trim(),
+    password: document.getElementById('passField').value
+  };
 
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Submitting...";
+  const vErr = validate(payload);
+  if (vErr) { setMessage(vErr, false); return; }
 
-      // First try a normal CORS fetch (preferred)
-      try {
-        const res = await fetch(API_URL, {
-          method: 'POST',
-          mode: 'cors',               // expect your Apps Script to allow CORS
-          cache: 'no-cache',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(payload)
-        });
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
 
-        // If server returns non-JSON or opaque, handle below
-        const ct = res.headers.get('content-type') || '';
-        if (res.ok && ct.includes('application/json')) {
-          const json = await res.json();
-          handleServerResponse(json);
-        } else if (res.ok) {
-          // sometimes Apps Script returns HTML or text (e.g., HtmlService output)
-          const text = await res.text();
-          setMessage(text || 'Submitted (server returned non-JSON response).', true);
-          form.reset();
-        } else {
-          // non-2xx
-          const txt = await res.text().catch(()=>res.statusText);
-          setMessage('Server error: ' + txt, false);
-        }
-      } catch (err) {
-        // Likely CORS blocked or network error.
-        // Fallback: try mode: 'no-cors' POST (request will be sent but response opaque)
-        try {
-          await fetch(API_URL, {
-            method: 'POST',
-            mode: 'no-cors',   // sends opaque request; cannot read response
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-          });
-          setMessage('Registration Successful ✅', true);
-          form.reset();
-        } catch (err2) {
-          setMessage('Network/CORS error: ' + (err.message || err2.message), false);
-        }
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Register";
-      }
-    }
+  try {
+    // fetch POST with no-cors fallback
+    await fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
 
-    function handleServerResponse(json) {
-      // Expected JSON: { status: 'success'|'exists'|'error', message: '...' , userId: ... }
-      if (!json) {
-        setMessage('Empty response from server.', false);
-        return;
-      }
-      const st = (json.status || '').toLowerCase();
-      if (st === 'success' || st === 'ok') {
-        setMessage(json.message || 'Registration successful!', true);
-        form.reset();
-      } else if (st === 'exists') {
-        setMessage(json.message || 'BP ID already exists.', false);
-      } else {
-        setMessage(json.message || 'Server returned error.', false);
-      }
-    }
-    </script>
-    
-  </body>
+    setMessage('✔ Registration submitted! Check Sheet for BP ID duplicates.', true);
+    form.reset();
+
+  } catch(err){
+    setMessage('Network error: '+err.message, false);
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Register";
+  }
+}
+</script>
+
+</body>
 </html>
