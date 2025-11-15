@@ -50,6 +50,7 @@
       
     </section>
 
+
     <script>
       function register() {
         const data = {
@@ -60,18 +61,11 @@
           bpid: document.getElementById("bpIdField").value,
           password: document.getElementById("passField").value
         };
-  
-        fetch("https://script.google.com/macros/s/AKfycbw69jYYiRH8vXlajRm5jFLZaq5NXpsCTPBs5ClQfhSWh3JZMp_qQ4N-vi9qvZHynj66/exec", {
+
+        fetch("https://script.google.com/macros/s/AKfycbyEHQN5T8MQP2RMZ6Ol6l7L4x8HNuAXbXfNnuyPjZ1JoedMeck78NQ4IEGnkYS8pI07/exec", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            bpname: document.getElementById("bpField").value,
-            outname: document.getElementById("outField").value,
-            area: document.getElementById("areaField").value,
-            designation: document.getElementById("desField").value,
-            bpid: document.getElementById("bpIdField").value,
-            password: document.getElementById("passField").value
-          })
+          body: JSON.stringify(data)
         })
         .then(res => res.json())
         .then(response => {
@@ -81,6 +75,7 @@
           document.getElementById("status").innerText = "Error Occurred ❌";
           console.error(err);
         });
+      }
     </script>
     
   </body>
