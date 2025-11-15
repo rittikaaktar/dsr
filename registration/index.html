@@ -25,7 +25,7 @@ small.hint { display:block; margin-top:10px; color:#666;}
 <h1>BP Registration</h1>
 <p class="lead">BP NAME, OUTLATE NAME, AREA, DESIGNATION, BP ID দিয়ে রেজিস্ট্রেশন করুন।</p>
 
-<form id="regForm" onsubmit="return handleSubmit(event)" autocomplete="off">
+<form id="regForm" autocomplete="off">
 <label>BP NAME
 <input id="bpField" name="bpName" type="text" required>
 </label>
@@ -52,7 +52,7 @@ small.hint { display:block; margin-top:10px; color:#666;}
 
 <button id="submitBtn" type="submit">Register</button>
 <div id="msg" class="msg"></div>
-<small class="hint">সাবমিশনের পরে মেসেজ দেখা যাবে।</small>
+<small class="hint">সাবমিশনের পরে মেসেজ একই পেইজে দেখা যাবে।</small>
 </form>
 </div>
 
@@ -63,24 +63,24 @@ const form = document.getElementById('regForm');
 const submitBtn = document.getElementById('submitBtn');
 const msgEl = document.getElementById('msg');
 
-function setMessage(text, ok = true) {
+function setMessage(text, ok=true) {
   msgEl.textContent = text;
   msgEl.className = ok ? 'msg ok' : 'msg err';
 }
 
 function validate(data) {
-  if (!data.bpName) return "BP Name is required";
-  if (!data.outletName) return "Outlet Name is required";
-  if (!data.area) return "Area is required";
-  if (!data.designation) return "Designation is required";
-  if (!data.bpId) return "BP ID is required";
-  if (!data.password || data.password.length < 6) return "Password must be at least 6 characters";
+  if(!data.bpName) return "BP Name is required";
+  if(!data.outletName) return "Outlet Name is required";
+  if(!data.area) return "Area is required";
+  if(!data.designation) return "Designation is required";
+  if(!data.bpId) return "BP ID is required";
+  if(!data.password || data.password.length<6) return "Password must be at least 6 characters";
   return null;
 }
 
-async function handleSubmit(e) {
+form.addEventListener('submit', async (e)=>{
   e.preventDefault();
-  setMessage('', true);
+  setMessage('',true);
 
   const payload = {
     bpName: document.getElementById('bpField').value.trim(),
@@ -92,30 +92,37 @@ async function handleSubmit(e) {
   };
 
   const vErr = validate(payload);
-  if (vErr) { setMessage(vErr, false); return; }
+  if(vErr){ setMessage(vErr,false); return; }
 
   submitBtn.disabled = true;
   submitBtn.textContent = "Submitting...";
 
-  try {
-    // fetch POST with no-cors fallback
-    await fetch(API_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(payload)
+  try{
+    const res = await fetch(API_URL,{
+      method:'POST',
+      mode:'cors',
+      cache:'no-cache',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
     });
+    const json = await res.json();
 
-    setMessage('✔ Registration submitted! Check Sheet for BP ID duplicates.', true);
-    form.reset();
+    if(json.status === 'success'){
+      setMessage(json.message,true);
+      form.reset();
+    } else if(json.status === 'exists'){
+      setMessage(json.message,false);
+    } else {
+      setMessage(json.message||"Server error",false);
+    }
 
   } catch(err){
-    setMessage('Network error: '+err.message, false);
+    setMessage('Network error: '+err.message,false);
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "Register";
   }
-}
+});
 </script>
 
 </body>
