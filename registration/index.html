@@ -64,18 +64,23 @@
         fetch("https://script.google.com/macros/s/AKfycbxDDy9pJbnc8yCxqx_tsFETGyHA1yfFQhnh14g_4r7H5SB4Kix0IWY4xlNoUWIFw9Hc/exec", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data)
+          body: JSON.stringify({
+            bpname: document.getElementById("bpField").value,
+            outname: document.getElementById("outField").value,
+            area: document.getElementById("areaField").value,
+            designation: document.getElementById("desField").value,
+            bpid: document.getElementById("bpIdField").value,
+            password: document.getElementById("passField").value
+          })
         })
         .then(res => res.json())
         .then(response => {
-          // Status show
           document.getElementById("status").innerText = response.message;
         })
         .catch(err => {
           document.getElementById("status").innerText = "Error Occurred ❌";
           console.error(err);
         });
-      }
     </script>
     
   </body>
