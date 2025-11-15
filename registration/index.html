@@ -54,27 +54,29 @@
     <script>
       function register() {
         const data = {
-          bpname: document.getElementById("bpField").value,
-          outname: document.getElementById("outField").value,
+          bpName: document.getElementById("bpField").value,
+          outletName: document.getElementById("outField").value,
           area: document.getElementById("areaField").value,
           designation: document.getElementById("desField").value,
-          bpid: document.getElementById("bpIdField").value,
+          id: document.getElementById("bpIdField").value,
           password: document.getElementById("passField").value
         };
 
-        fetch("https://script.google.com/macros/s/AKfycbyEHQN5T8MQP2RMZ6Ol6l7L4x8HNuAXbXfNnuyPjZ1JoedMeck78NQ4IEGnkYS8pI07/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbyodZPYb_bQu_0_OIWA50wQT_QmhKmDHjPFxz0a8M_UQVpkz8roUy4d1JUXl770QpbH/exec", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data)
         })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(response => {
-          document.getElementById("status").innerText = response.message;
+          if(response === "SUCCESS") {
+            document.getElementById("status").innerText = "Registration Successful ✅";
+          } else if(response === "ID_EXISTS") {
+            document.getElementById("status").innerText = "ID already exists ❌";
+          } else {
+            document.getElementById("status").innerText = "Error Occurred ❌";
+          }
         })
-        .catch(err => {
-          document.getElementById("status").innerText = "Error Occurred ❌";
-          console.error(err);
-        });
+        .catch(err => console.error(err));
       }
     </script>
     
