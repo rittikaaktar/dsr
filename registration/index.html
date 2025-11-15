@@ -15,32 +15,32 @@
       <form id="regForm" method="POST" action="https://script.google.com/macros/s/AKfycbxe0aUH9k3qJA_or5MlJiVk-7bm3wyNFt4jpRiffNeLr_4cQxpbE-kI7EE1W-DCE7jq/exec" class="form">
         <div class="input-box">
           <label>BP NAME:</label>
-          <input type="text" id="bpName" name="bpname" placeholder="BP NAME" required />
+          <input type="text" id="bpField" name="bpname" placeholder="BP NAME" required />
         </div>
 
         <div class="input-box">
           <label>OUTLATE NAME:</label>
-          <input type="text" id="outletName" name="outname" placeholder="OUTLATE NAME" required />
+          <input type="text" id="outField" name="outname" placeholder="OUTLATE NAME" required />
         </div>
         
         <div class="input-box">
           <label>AREA:</label>
-          <input type="text" id="area" name="area" placeholder="AREA" required />
+          <input type="text" id="areaField" name="area" placeholder="AREA" required />
         </div>
 
         <div class="input-box">
           <label>DESIGNATION:</label>
-          <input type="text" id="designation" name="designation" placeholder="DESIGNATION" required />
+          <input type="text" id="desField" name="designation" placeholder="DESIGNATION" required />
         </div>
 
         <div class="input-box">
           <label>BP ID:</label>
-          <input type="text" id="bpId" name="bpid" placeholder="BP ID" required />
+          <input type="text" id="bpIdField" name="bpid" placeholder="BP ID" required />
         </div>
 
         <div class="input-box">
           <label>PASSWORD:</label>
-          <input type="password" id="password" name="password" placeholder="PASSWORD" required />
+          <input type="password" id="passField" name="password" placeholder="PASSWORD" required />
         </div>
 
         <button type="button" id="registration" onclick="register()">Register</button>
@@ -53,12 +53,12 @@
     <script>
         function register() {
           const data = {
-            bpName: document.getElementById("bpName").value,
-            outletName: document.getElementById("outletName").value,
-            area: document.getElementById("area").value,
-            designation: document.getElementById("designation").value,
-            bpId: document.getElementById("bpId").value,
-            password: document.getElementById("password").value
+            bpName: document.getElementById("bpField").value,
+            outletName: document.getElementById("outField").value,
+            area: document.getElementById("areaField").value,
+            designation: document.getElementById("desField").value,
+            bpId: document.getElementById("bpIdField").value,
+            password: document.getElementById("passField").value
           };
     
           fetch("https://script.google.com/macros/s/AKfycbxe0aUH9k3qJA_or5MlJiVk-7bm3wyNFt4jpRiffNeLr_4cQxpbE-kI7EE1W-DCE7jq/exec", {
