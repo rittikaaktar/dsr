@@ -12,7 +12,7 @@
   <body>
     <section class="container">
       <header>BP Registration</header>
-      <form id="regForm" method="POST" action="https://script.google.com/macros/s/AKfycbxe0aUH9k3qJA_or5MlJiVk-7bm3wyNFt4jpRiffNeLr_4cQxpbE-kI7EE1W-DCE7jq/exec" class="form">
+      <form id="regForm" class="form">
         <div class="input-box">
           <label>BP NAME:</label>
           <input type="text" id="bpField" name="bpname" placeholder="BP NAME" required />
@@ -51,33 +51,32 @@
     </section>
 
     <script>
-        function register() {
-          const data = {
-            bpName: document.getElementById("bpField").value,
-            outletName: document.getElementById("outField").value,
-            area: document.getElementById("areaField").value,
-            designation: document.getElementById("desField").value,
-            bpId: document.getElementById("bpIdField").value,
-            password: document.getElementById("passField").value
-          };
-    
-          fetch("https://script.google.com/macros/s/AKfycbxe0aUH9k3qJA_or5MlJiVk-7bm3wyNFt4jpRiffNeLr_4cQxpbE-kI7EE1W-DCE7jq/exec", {
-            method: "POST",
-            body: JSON.stringify(data)
-          })
-          .then(res => res.text())
-          .then(response => {
-            if(response === "SUCCESS") {
-              document.getElementById("status").innerText = "Registration Successful ✅";
-            } else if(response === "ID_EXISTS") {
-              document.getElementById("status").innerText = "ID already exists ❌";
-            } else {
-              document.getElementById("status").innerText = "Error Occurred ❌";
-            }
-          })
-          .catch(err => console.error(err));
-        }
-      </script>
+      function register() {
+        const data = {
+          bpname: document.getElementById("bpField").value,
+          outname: document.getElementById("outField").value,
+          area: document.getElementById("areaField").value,
+          designation: document.getElementById("desField").value,
+          bpid: document.getElementById("bpIdField").value,
+          password: document.getElementById("passField").value
+        };
+  
+        fetch("https://script.google.com/macros/s/AKfycbxFQ6nOLeEWVS8clrqnkEGcvwY8aOuZtjKn1ql5V6zA1wnVz5V7SsJ_FCEJtVoR0jz5/exec", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(response => {
+          // Status show
+          document.getElementById("status").innerText = response.message;
+        })
+        .catch(err => {
+          document.getElementById("status").innerText = "Error Occurred ❌";
+          console.error(err);
+        });
+      }
+    </script>
     
   </body>
 </html>
