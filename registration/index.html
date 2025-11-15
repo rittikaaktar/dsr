@@ -1,83 +1,184 @@
-<!DOCTYPE html>
-<!---Coding By CodingLab | www.codinglabweb.com--->
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>BP Registration - DSR SHEET</title>
-    <!---Custom CSS File--->
-    <link rel="stylesheet" href="../style.css" />
-  </head>
-  <body>
-    <section class="container">
-      <header>BP Registration</header>
-      <form id="regForm" class="form">
-        <div class="input-box">
-          <label>BP NAME:</label>
-          <input type="text" id="bpField" name="bpName" placeholder="BP NAME" required />
-        </div>
-
-        <div class="input-box">
-          <label>OUTLATE NAME:</label>
-          <input type="text" id="outField" name="outletName" placeholder="OUTLATE NAME" required />
-        </div>
-        
-        <div class="input-box">
-          <label>AREA:</label>
-          <input type="text" id="areaField" name="area" placeholder="AREA" required />
-        </div>
-
-        <div class="input-box">
-          <label>DESIGNATION:</label>
-          <input type="text" id="desField" name="designation" placeholder="DESIGNATION" required />
-        </div>
-
-        <div class="input-box">
-          <label>BP ID:</label>
-          <input type="text" id="bpIdField" name="bpId" placeholder="BP ID" required />
-        </div>
-
-        <div class="input-box">
-          <label>PASSWORD:</label>
-          <input type="password" id="passField" name="password" placeholder="PASSWORD" required />
-        </div>
-
-        <button type="button" id="registration" onclick="register()">Register</button>
-      </form>
-
-      <div id="msg" style="margin-top:20px;font-weight:bold;"></div>
-      
-    </section>
-
-
-    <script>
-    const API_URL = "https://script.google.com/macros/s/AKfycbys8u_uOL3yqfth0vCXSmoy-lKzJAUO-GtIZAL1E3acV4zCm-QAdEnJA-s-2ynIfEwE/exec";  // এখানে Apps Script URL বসান
-
-    async function submitForm() {
-
-        const payload = {
-            bpName: document.getElementById("bpField").value,
-            outletName: document.getElementById("outField").value,
-            area: document.getElementById("areaField").value,
-            designation: document.getElementById("desField").value,
-            bpId: document.getElementById("bpIdField").value,
-            password: document.getElementById("passField").value
-        };
-
-        let res = await fetch(API_URL, {
-            method: "POST",
-            mode: "no-cors",  // CORS bypass
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-
-        // no-cors হলে response পড়া যায় না
-        // তাই আমরা UI-তে শুধু সফল মেসেজ দেখাবো
-        document.getElementById("msg").innerHTML = 
-            "✔ Your registration request was submitted.";
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>BP Registration</title>
+  <style>
+    :root{--maxw:720px;--muted:#666}
+    body{font-family:Inter,Arial,Helvetica,sans-serif;background:#f6f8fa;color:#111;margin:0;padding:24px;display:flex;justify-content:center}
+    .card{width:100%;max-width:var(--maxw);background:#fff;border-radius:12px;padding:22px;box-shadow:0 6px 24px rgba(18,38,63,0.08)}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 18px;color:var(--muted)}
+    label{display:block;margin-top:12px;font-weight:600}
+    input[type="text"], input[type="password"]{
+      width:100%;padding:10px 12px;margin-top:6px;border:1px solid #e3e8ee;border-radius:8px;box-sizing:border-box;font-size:14px;
     }
-    </script>
-    
-  </body>
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    button{margin-top:16px;padding:10px 16px;border-radius:8px;border:0;background:#0b76ef;color:#fff;font-weight:600;cursor:pointer}
+    button[disabled]{opacity:0.6;cursor:not-allowed}
+    .msg{margin-top:14px;font-weight:600}
+    .msg.ok{color:green}
+    .msg.err{color:#c0392b}
+    small.hint{display:block;margin-top:10px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <h1>BP Registration</h1>
+    <p class="lead">BP NAME, OUTLATE NAME, AREA, DESIGNATION, BP ID দিয়ে রেজিস্ট্রেশন করুন।</p>
+
+    <form id="regForm" onsubmit="return handleSubmit(event)" autocomplete="off" novalidate>
+      <label>BP NAME
+        <input id="bpField" name="bpName" type="text" placeholder="Enter BP name" required>
+      </label>
+
+      <label>OUTLATE NAME
+        <input id="outField" name="outletName" type="text" placeholder="Outlet name" required>
+      </label>
+
+      <div class="row">
+        <div class="col">
+          <label>AREA
+            <input id="areaField" name="area" type="text" placeholder="Area" required>
+          </label>
+        </div>
+        <div class="col">
+          <label>DESIGNATION
+            <input id="desField" name="designation" type="text" placeholder="Designation" required>
+          </label>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label>BP ID
+            <input id="bpIdField" name="bpId" type="text" placeholder="Unique BP ID" required>
+          </label>
+        </div>
+        <div class="col">
+          <label>PASSWORD
+            <input id="passField" name="password" type="password" placeholder="Password (min 6 chars)" required>
+          </label>
+        </div>
+      </div>
+
+      <button id="submitBtn" type="submit">Register</button>
+      <div id="msg" class="msg" aria-live="polite"></div>
+      <small class="hint">নোট: সাবমিশন হওয়ার পরে মেসেজ দেখা যাবে। যদি CORS না থাকে, আপনার রিকোয়েস্ট সার্ভারে পৌঁছবে কিনা ব্যাকএন্ড লোগ চেক করুন।</small>
+    </form>
+  </div>
+
+<script>
+/*
+  আপনার Apps Script Web App URL এখানে বসানো আছে (আপনি আমাকে যে URL দিয়েছেন)
+  যদি পরে URL পরিবর্তন করেন, শুধুমাত্র API_URL পরিবর্তন করলেই হবে
+*/
+const API_URL = "https://script.google.com/macros/s/AKfycbys8u_uOL3yqfth0vCXSmoy-lKzJAUO-GtIZAL1E3acV4zCm-QAdEnJA-s-2ynIfEwE/exec";
+
+const form = document.getElementById('regForm');
+const submitBtn = document.getElementById('submitBtn');
+const msgEl = document.getElementById('msg');
+
+function setMessage(text, ok = true) {
+  msgEl.textContent = text;
+  msgEl.className = ok ? 'msg ok' : 'msg err';
+}
+
+function validate(data) {
+  if (!data.bpName) return "BP Name is required";
+  if (!data.outletName) return "Outlet Name is required";
+  if (!data.area) return "Area is required";
+  if (!data.designation) return "Designation is required";
+  if (!data.bpId) return "BP ID is required";
+  if (!data.password || data.password.length < 6) return "Password must be at least 6 characters";
+  return null;
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  setMessage('', true);
+
+  const payload = {
+    bpName: document.getElementById('bpField').value.trim(),
+    outletName: document.getElementById('outField').value.trim(),
+    area: document.getElementById('areaField').value.trim(),
+    designation: document.getElementById('desField').value.trim(),
+    bpId: document.getElementById('bpIdField').value.trim(),
+    password: document.getElementById('passField').value
+  };
+
+  const vErr = validate(payload);
+  if (vErr) { setMessage(vErr, false); return; }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Submitting...";
+
+  // First try a normal CORS fetch (preferred)
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      mode: 'cors',               // expect your Apps Script to allow CORS
+      cache: 'no-cache',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    // If server returns non-JSON or opaque, handle below
+    const ct = res.headers.get('content-type') || '';
+    if (res.ok && ct.includes('application/json')) {
+      const json = await res.json();
+      handleServerResponse(json);
+    } else if (res.ok) {
+      // sometimes Apps Script returns HTML or text (e.g., HtmlService output)
+      const text = await res.text();
+      setMessage(text || 'Submitted (server returned non-JSON response).', true);
+      form.reset();
+    } else {
+      // non-2xx
+      const txt = await res.text().catch(()=>res.statusText);
+      setMessage('Server error: ' + txt, false);
+    }
+  } catch (err) {
+    // Likely CORS blocked or network error.
+    // Fallback: try mode: 'no-cors' POST (request will be sent but response opaque)
+    try {
+      await fetch(API_URL, {
+        method: 'POST',
+        mode: 'no-cors',   // sends opaque request; cannot read response
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      setMessage('✔ Submitted (no-cors fallback). If server accepted the data you will see it in the sheet. If not, see browser console or server logs.', true);
+      form.reset();
+    } catch (err2) {
+      setMessage('Network/CORS error: ' + (err.message || err2.message), false);
+    }
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Register";
+  }
+}
+
+function handleServerResponse(json) {
+  // Expected JSON: { status: 'success'|'exists'|'error', message: '...' , userId: ... }
+  if (!json) {
+    setMessage('Empty response from server.', false);
+    return;
+  }
+  const st = (json.status || '').toLowerCase();
+  if (st === 'success' || st === 'ok') {
+    setMessage(json.message || 'Registration successful!', true);
+    form.reset();
+  } else if (st === 'exists') {
+    setMessage(json.message || 'BP ID already exists.', false);
+  } else {
+    setMessage(json.message || 'Server returned error.', false);
+  }
+}
+</script>
+</body>
 </html>
